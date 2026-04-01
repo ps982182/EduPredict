@@ -389,29 +389,38 @@ function getShapScore(student, feat) {
 // ─── API CALL ─────────────────────────────────────────────────────────────────
 async function callLLM(messages, systemPrompt) {
   try {
-    const response = await fetch("http://localhost:5000/api/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://edupredict-680v.onrender.com/api/chat",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ messages, systemPrompt }),
       },
-      body: JSON.stringify({ messages, systemPrompt }),
-    });
+    );
 
-    // ✅ FIXED ERROR HANDLING
+    // ✅ Proper error handling
     if (!response.ok) {
       const errText = await response.text();
       console.error("API error:", errText);
-      return "LLM API failed";
+      return "⚠️ Server error. Please try again.";
     }
 
     const data = await response.json();
-
     console.log("Frontend got:", data);
 
-    return data.reply || "No response";
+    // ✅ Safe response handling
+    if (!data || !data.reply) {
+      return "⚠️ No response from AI. Try again.";
+    }
+
+    return data.reply;
   } catch (err) {
     console.error("Frontend error:", err);
-    return "Error connecting to AI";
+
+    // ✅ Render cold start handling
+    return "⏳ Server is waking up... please try again in 5 seconds.";
   }
 }
 
