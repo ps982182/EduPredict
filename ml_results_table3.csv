@@ -1,0 +1,5 @@
+Model,MAE,R2,CV_MAE
+Linear Regression,0.7053,0.6824,0.637
+Random Forest,0.76,0.6271,0.6742
+Gradient Boosting,0.7779,0.6089,0.6852
+XGBoost,0.7676,0.6184,0.6809
